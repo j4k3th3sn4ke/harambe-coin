@@ -1,1 +1,1 @@
-This is the repo for HarambeCoin
+This is the repo for HarambeCoin. More code coming shortly.
