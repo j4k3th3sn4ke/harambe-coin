@@ -8,9 +8,7 @@ contract HarambeCoin is owned{
     string public symbol;
     address public owner;
     uint8 public decimals = 0;
-    // 18 decimals is the strongly suggested default, avoid changing it
     uint256 public totalSupply;
-    uint constant MAX_UINT = 2**256 - 1;
 
     // This creates an array with all balances
     mapping (address => uint256) public balanceOf;
@@ -32,7 +30,7 @@ contract HarambeCoin is owned{
         string tokenName,
         string tokenSymbol
     ) public {
-        totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount
+        totalSupply = initialSupply * 0;  // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
