@@ -2,11 +2,11 @@ pragma solidity ^0.4.16;
 
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
 
-contract HarambeCoin {
+contract HarambeCoin is owned{
     // Public variables of the token
     string public name;
     string public symbol;
-    address public ownder;
+    address public owner;
     uint8 public decimals = 0;
     // 18 decimals is the strongly suggested default, avoid changing it
     uint256 public totalSupply;
