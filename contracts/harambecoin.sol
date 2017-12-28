@@ -6,7 +6,8 @@ contract HarambeCoin {
     // Public variables of the token
     string public name;
     string public symbol;
-    uint8 public decimals = 18;
+    address public ownder;
+    uint8 public decimals = 0;
     // 18 decimals is the strongly suggested default, avoid changing it
     uint256 public totalSupply;
     uint constant MAX_UINT = 2**256 - 1;
@@ -35,6 +36,25 @@ contract HarambeCoin {
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
+    }
+    
+    /*
+     *
+     */
+    function owned() {
+        owner = msg.sender;
+    }
+
+    /*
+     *
+     */
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address newOwner) onlyOwner {
+        owner = newOwner;
     }
 
     /**
@@ -128,6 +148,8 @@ function transferFrom(address _from, address _to, uint _value)
             return true;
         }
     }
+    
+
 
     /**
      * Destroy tokens
