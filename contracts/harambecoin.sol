@@ -5,7 +5,7 @@ interface tokenRecipient { function receiveApproval(address _from, uint256 _valu
 contract owned {
     address public owner;
 
-    function owned() {
+    function owned() public {
         owner = msg.sender;
     }
 
@@ -14,7 +14,7 @@ contract owned {
         _;
     }
 
-    function transferOwnership(address newOwner) onlyOwner {
+    function transferOwnership(address newOwner) onlyOwner public {
         owner = newOwner;
     }
 }
@@ -45,8 +45,8 @@ contract HarambeCoin is owned{
     function HarambeCoin(
         uint256 initialSupply,
         string tokenName,
-        string tokenSymbol
-        address centralMinter,
+        string tokenSymbol,
+        address centralMinter
     ) public {
         totalSupply = initialSupply * 0;  // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
@@ -107,9 +107,7 @@ function transferFrom(address _from, address _to, uint _value)
             && balanceOf[_to] + _value >= balanceOf[_to]);
     balanceOf[_to] += _value;
     balanceOf[_from] -= _value;
-    if (allowance_amount < MAX_UINT) {
-        allowance[_from][msg.sender] -= _value;
-    }
+    allowance[_from][msg.sender] -= _value;
     Transfer(_from, _to, _value);
     return true;
 }
@@ -150,7 +148,7 @@ function transferFrom(address _from, address _to, uint _value)
     /*
      *
      */
-    function mintToken(address _to, uint256 mintedAmount) onlyOwner {
+    function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
         balanceOf[_to] += mintedAmount;
         totalSupply += mintedAmount;
         Transfer(0, owner, mintedAmount);
