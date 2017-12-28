@@ -149,7 +149,15 @@ function transferFrom(address _from, address _to, uint _value)
         }
     }
     
-
+    /*
+     *
+     */
+    function mintToken(address _to, uint256 mintedAmount) onlyOwner {
+        balanceOf[_to] += mintedAmount;
+        totalSupply += mintedAmount;
+        Transfer(0, owner, mintedAmount);
+        Transfer(owner, _to, mintedAmount);
+    }
 
     /**
      * Destroy tokens
