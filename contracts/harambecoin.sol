@@ -46,11 +46,13 @@ contract HarambeCoin is owned{
         uint256 initialSupply,
         string tokenName,
         string tokenSymbol
+        address centralMinter,
     ) public {
         totalSupply = initialSupply * 0;  // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
+        if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
     }
 
     /**
