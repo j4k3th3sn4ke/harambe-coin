@@ -43,12 +43,11 @@ contract HarambeCoin is owned{
      * Initializes contract with initial supply tokens to the creator of the contract
      */
     function HarambeCoin(
-        uint256 initialSupply,
         string tokenName,
         string tokenSymbol,
         address centralMinter
     ) public {
-        totalSupply = initialSupply * 0;  // Update total supply with the decimal amount
+        totalSupply = 0;  // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
