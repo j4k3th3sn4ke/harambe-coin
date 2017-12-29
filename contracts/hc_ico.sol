@@ -84,8 +84,8 @@ contract ProjectHarambe {
     /**
      * Returns total supply of the contract
      */
-    function totalSupply() constant public returns (uint256 total){
-        return totalSupply;
+    function totalMinted() constant public returns (uint256 total){
+        return totalMinted;
     }
 
     /**
