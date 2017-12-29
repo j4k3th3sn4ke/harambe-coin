@@ -35,7 +35,9 @@ contract HarambeCoin is owned{
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     // This notifies clients about the amount burnt
-    event Burn(address indexed from, uint256 value);
+    //event Burn(address indexed from, uint256 value);
+
+    event Approval(address indexed from, address indexed spender, uint256 value)
 
     /**
      * Constrctor function
@@ -76,6 +78,22 @@ contract HarambeCoin is owned{
     }
 
     /**
+     * Returns total supply of the contract
+     */
+    function totalSupply() constant public returns (uint256 totalSupply){
+        return totalSupply;
+    }
+
+    /**
+     * Returns balance of the owner of the provided address
+     */
+    function balanceOf(address _owner) constant public {
+        return balanceOf[_owner];
+    }
+
+
+
+    /**
      * Transfer tokens
      *
      * Send `_value` tokens to `_to` from your account
@@ -83,8 +101,9 @@ contract HarambeCoin is owned{
      * @param _to The address of the recipient
      * @param _value the amount to send
      */
-    function transfer(address _to, uint256 _value) public {
+    function transfer(address _to, uint256 _value) public returns (bool success) {
         _transfer(msg.sender, _to, _value);
+        return true;
     }
 
     /// @dev ERC20 transferFrom, modified such that an allowance of MAX_UINT represents an unlimited allowance.
@@ -96,20 +115,20 @@ contract HarambeCoin is owned{
      * @param _to The address of the recipient
      * @param _value the amount to send
      */
-function transferFrom(address _from, address _to, uint _value)
-    public
-    returns (bool)
-{
-    uint allowance_amount = allowance[_from][msg.sender];
-    require(balanceOf[_from] >= _value
-            && allowance_amount >= _value
-            && balanceOf[_to] + _value >= balanceOf[_to]);
-    balanceOf[_to] += _value;
-    balanceOf[_from] -= _value;
-    allowance[_from][msg.sender] -= _value;
-    Transfer(_from, _to, _value);
-    return true;
-}
+    function transferFrom(address _from, address _to, uint _value)
+        public
+        returns (bool success)
+    {
+        uint allowance_amount = allowance[_from][msg.sender];
+        require(balanceOf[_from] >= _value
+                && allowance_amount >= _value
+                && balanceOf[_to] + _value >= balanceOf[_to]);
+        balanceOf[_to] += _value;
+        balanceOf[_from] -= _value;
+        allowance[_from][msg.sender] -= _value;
+        Transfer(_from, _to, _value);
+        return true;
+    }
 
     /**
      * Set allowance for other address
@@ -119,11 +138,20 @@ function transferFrom(address _from, address _to, uint _value)
      * @param _spender The address authorized to spend
      * @param _value the max amount they can spend
      */
-    function approve(address _spender, uint256 _value) public
-        returns (bool success) {
+    function approve(address _spender, uint256 _value) public returns (bool success) {
         allowance[msg.sender][_spender] = _value;
+        Approval(msg.sender, _spender, _value);
         return true;
     }
+
+
+    /**
+     * Returns allowance of the owner to the pro
+     */
+    function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
+        return allowance[_owner][_spender];
+    }
+
 
     /**
      * Set allowance for other address and notify
