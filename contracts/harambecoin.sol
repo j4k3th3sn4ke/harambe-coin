@@ -33,10 +33,6 @@ contract HarambeCoin is owned{
 
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
-
-    // This notifies clients about the amount burnt
-    //event Burn(address indexed from, uint256 value);
-
     event Approval(address indexed from, address indexed spender, uint256 value)
 
     /**
@@ -49,7 +45,7 @@ contract HarambeCoin is owned{
         string tokenSymbol,
         address centralMinter
     ) public {
-        totalSupply = 0;  // Update total supply with the decimal amount
+        totalSupply = 0;                                    // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
@@ -85,9 +81,9 @@ contract HarambeCoin is owned{
     }
 
     /**
-     * Returns balance of the owner of the provided address
+     * Returns balance of particular address of account
      */
-    function balanceOf(address _owner) constant public {
+    function balanceOf(address _owner) constant public returns (uint256 balance) {
         return balanceOf[_owner];
     }
 
@@ -138,7 +134,7 @@ contract HarambeCoin is owned{
      * @param _spender The address authorized to spend
      * @param _value the max amount they can spend
      */
-    function approve(address _spender, uint256 _value) public returns (bool success) {
+    function approve(address _spender, uint256 _value) returns (bool success) {
         allowance[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
