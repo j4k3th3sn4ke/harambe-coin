@@ -36,7 +36,7 @@ contract ProjectHarambe {
      *
      * Setup the owner
      */
-    function Crowdsale(
+    function ProjectHarambe(
         uint etherCostOfEachToken,
         address tokenAddress
     ) public {
@@ -61,7 +61,7 @@ contract ProjectHarambe {
     // CONTRIBUTE FUNCTION
     // converts ETH to TOKEN and sends new TOKEN to the sender
     function contribute() external payable {
-        require(msg.value>0);
+        require(msg.value > 0);
         require(isFunding);
         //require(block.number <= endBlock);
         uint256 amount = msg.value * exchangeRate;
@@ -73,7 +73,6 @@ contract ProjectHarambe {
         harambeCoin.mintToken(msg.sender, amount);
         Contribution(msg.sender, amount);
     }
-
 
     modifier afterDeadline() {
         if (now >= deadline) {
