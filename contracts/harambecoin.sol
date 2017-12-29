@@ -38,7 +38,7 @@ contract HarambeCoin is owned{
     event Burn(address indexed from, uint256 value);
 
     /**
-     * Constrctor function
+     * Constructor function
      *
      * Initializes contract with initial supply tokens to the creator of the contract
      */
@@ -144,14 +144,19 @@ function transferFrom(address _from, address _to, uint _value)
         }
     }
     
-    /*
+    /**
+     * Mints coins directly to wallet address
      *
+     * Allows the contract owner to mint `_value` tokens to an address
+     *
+     * @param _to The address reciving the coins
+     * @param _value The amount of coin being minted
      */
-    function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
-        balanceOf[_to] += mintedAmount;
-        totalSupply += mintedAmount;
-        Transfer(0, owner, mintedAmount);
-        Transfer(owner, _to, mintedAmount);
+    function mintToken(address _to, uint256 _value) onlyOwner public {
+        balanceOf[_to] += _value;
+        totalSupply += _value;
+        Transfer(0, owner, _value);
+        Transfer(owner, _to, _value);
     }
 
 }
