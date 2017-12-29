@@ -179,7 +179,7 @@ contract HarambeCoin is owned{
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
         uint256 total = mintedAmount * (10 ** decimals);
         balanceOf[_to] += total;
-        totalSupply += total;
+        totalSupply += mintedAmount;
         Transfer(0, owner, total);
         Transfer(owner, _to, total);
     }
