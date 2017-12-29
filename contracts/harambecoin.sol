@@ -176,11 +176,11 @@ contract HarambeCoin is owned{
      * @param _to The address reciving the coins
      * @param _value The amount of coin being minted
      */
-    function mintToken(address _to, uint256 _value) onlyOwner public {
-        balanceOf[_to] += _value;
-        totalSupply += _value;
-        Transfer(0, owner, _value);
-        Transfer(owner, _to, _value);
+    function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
+        balanceOf[_to] += mintedAmount;
+        totalSupply += mintedAmount;
+        Transfer(0, owner, mintedAmount);
+        Transfer(owner, _to, mintedAmount);
     }
 
 }
