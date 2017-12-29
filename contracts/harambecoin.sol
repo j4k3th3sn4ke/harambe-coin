@@ -24,7 +24,7 @@ contract HarambeCoin is owned{
     // Public variables of the token
     string public name;
     string public symbol;
-    uint8 public decimals = 0;
+    uint8 public decimals = 18;
     uint256 public totalSupply;
 
     // This creates an array with all balances
@@ -33,7 +33,7 @@ contract HarambeCoin is owned{
 
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed from, address indexed spender, uint256 value)
+    event Approval(address indexed from, address indexed spender, uint256 value);
 
     /**
      * Constructor function
@@ -76,7 +76,7 @@ contract HarambeCoin is owned{
     /**
      * Returns total supply of the contract
      */
-    function totalSupply() constant public returns (uint256 totalSupply){
+    function totalSupply() constant public returns (uint256 total){
         return totalSupply;
     }
 
@@ -134,7 +134,7 @@ contract HarambeCoin is owned{
      * @param _spender The address authorized to spend
      * @param _value the max amount they can spend
      */
-    function approve(address _spender, uint256 _value) returns (bool success) {
+    function approve(address _spender, uint256 _value) public returns (bool success) {
         allowance[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
@@ -144,7 +144,7 @@ contract HarambeCoin is owned{
     /**
      * Returns allowance of the owner to the pro
      */
-    function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
+    function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
         return allowance[_owner][_spender];
     }
 
