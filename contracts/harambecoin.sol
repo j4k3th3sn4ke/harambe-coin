@@ -24,7 +24,7 @@ contract HarambeCoin is owned{
     // Public variables of the token
     string public name;
     string public symbol;
-    uint8 public decimals = 18;
+    uint256 public decimals = 18;
     uint256 public totalSupply;
 
     // This creates an array with all balances
@@ -177,10 +177,11 @@ contract HarambeCoin is owned{
      * @param mintedAmount The amount of coin being minted
      */
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
-        balanceOf[_to] += mintedAmount;
-        totalSupply += mintedAmount;
-        Transfer(0, owner, mintedAmount);
-        Transfer(owner, _to, mintedAmount);
+        uint256 total = mintedAmount * (10 ** decimals);
+        balanceOf[_to] += total;
+        totalSupply += total;
+        Transfer(0, owner, total);
+        Transfer(owner, _to, total);
     }
 
 }
