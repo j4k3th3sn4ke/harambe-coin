@@ -1,9 +1,21 @@
-
 pragma solidity ^0.4.16;
 
 interface token {
     function transfer(address receiver, uint amount);
 }
+
+
+contract HarambeCoin {
+  uint public totalSupply;
+  function balanceOf(address who) constant returns (uint);
+  function allowance(address owner, address spender) constant returns (uint);
+  function transfer(address to, uint value) returns (bool ok);
+  function transferFrom(address from, address to, uint value) returns (bool ok);
+  function approve(address spender, uint value) returns (bool ok);
+  function mintToken(address to, uint256 value) returns (uint256);
+  function changeTransfer(bool allowed);
+}
+
 
 contract ProjectHarambe {
     address public beneficiary;
@@ -17,43 +29,62 @@ contract ProjectHarambe {
     event GoalReached(address recipient, uint totalAmountRaised);
     event FundTransfer(address backer, uint amount, bool isContribution);
 
+
     /**
      * Constrctor function
      *
      * Setup the owner
      */
     function Crowdsale(
-        address ifSuccessfulSendTo,
-        uint durationInMinutes,
         uint etherCostOfEachToken,
-        address addressOfTokenUsedAsReward
+        address tokenAddress
     ) {
-        beneficiary = ifSuccessfulSendTo;
-        deadline = now + durationInMinutes * 1 minutes;
-        price = etherCostOfEachToken * 1 ether;
-        tokenReward = token(addressOfTokenUsedAsReward);
+        ETHWalletKy = 0x0;
+        ETHWalletBr = 0x0;
+        ETHWalletJa = 0x0;
+        ETHWalletCh = 0x0;
+        ETHWalletHarambe = 0x0;
+
+        /* The ICO will run for 31 days (the length of January) */
+        deadline = now + 744 * 60 minutes;
+
+        /* Exchange rate */
+        exchangeRate = etherCostOfEachToken * 1 ether;
+
+        //tokenReward = token(addressOfTokenUsedAsReward);
+
+        token = HarambeCoin(tokenAddress);
     }
 
-    /**
-     * Fallback function
-     *
-     * The function without name is the default function that is called whenever anyone sends funds to a contract
-     */
-    function () payable {
-        require(!crowdsaleClosed);
-        uint amount = msg.value;
-        balanceOf[msg.sender] += amount;
-        amountRaised += amount;
-        tokenReward.transfer(msg.sender, amount / price);
-        FundTransfer(msg.sender, amount, true);
+    // CONTRIBUTE FUNCTION
+    // converts ETH to TOKEN and sends new TOKEN to the sender
+    function contribute() external payable {
+        require(msg.value>0);
+        require(isFunding);
+        //require(block.number <= endBlock);
+        uint256 amount = msg.value * exchangeRate;
+        uint256 total = totalMinted + amount;
+        //require(total<=maxMintable);
+        totalMinted += total;
+        ETHWallet.transfer(msg.value);
+        Token.mintToken(msg.sender, amount);
+        Contribution(msg.sender, amount);
     }
 
-    modifier afterDeadline() { 
+
+    modifier afterDeadline() {
         if (now >= deadline) {
             _;
         }
     }
     
+
+    // update the ETH/COIN rate
+    function updateRate(uint256 rate) external {
+        require(msg.sender==creator);
+        require(isFunding);
+        exchangeRate = rate;
+    }
 
     /**
      * Check if goal was reached
