@@ -27,7 +27,7 @@ contract ProjectHarambe {
     mapping(address => uint256) public balanceOf;
     bool public isFunding;
 
-    event ReleaseTokens(address from, uint256 amount);
+    //event ReleaseTokens(address from, uint256 amount);
     event Contribution(address from, uint256 amount);
 
 
@@ -36,7 +36,7 @@ contract ProjectHarambe {
      *
      * Setup the owner
      */
-    function Crowdsale(
+    function ProjectHarambe(
         uint etherCostOfEachToken,
         address tokenAddress
     ) public {
@@ -59,9 +59,9 @@ contract ProjectHarambe {
     }
 
     // CONTRIBUTE FUNCTION
-    // converts ETH to TOKEN and sends new TOKEN to the sender
+    // converts ETH to TOKEN and holds new token to be sent
     function contribute() external payable {
-        require(msg.value>0);
+        require(msg.value > 0);
         require(isFunding);
         //require(block.number <= endBlock);
         uint256 amount = msg.value * exchangeRate;
@@ -69,11 +69,11 @@ contract ProjectHarambe {
         //require(total<=maxMintable);
         totalMinted += total;
 
-        ETHWalletHarambe.transfer(msg.value);
-        harambeCoin.mintToken(msg.sender, amount);
+        //ETHWalletHarambe.transfer(msg.value);
+        //harambeCoin.mintToken(msg.sender, amount);
+        balanceOf[msg.sender] += amount;
         Contribution(msg.sender, amount);
     }
-
 
     modifier afterDeadline() {
         if (now >= deadline) {
@@ -81,6 +81,20 @@ contract ProjectHarambe {
         }
     }
     
+    /**
+     * Returns total supply of the contract
+     */
+    function totalSupply() constant public returns (uint256 total){
+        return totalSupply;
+    }
+
+    /**
+     * Returns balance of particular address of account
+     */
+    function balanceOf() constant public returns (uint256 balance) {
+        return balanceOf[msg.sender];
+    }
+
     /**
      * Check if goal was reached
      *
