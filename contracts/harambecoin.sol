@@ -171,10 +171,10 @@ contract HarambeCoin is owned{
     /**
      * Mints coins directly to wallet address
      *
-     * Allows the contract owner to mint `_value` tokens to an address
+     * Allows the contract owner to mint `mintedAmount` tokens to an address
      *
      * @param _to The address reciving the coins
-     * @param _value The amount of coin being minted
+     * @param mintedAmount The amount of coin being minted
      */
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
         balanceOf[_to] += mintedAmount;
