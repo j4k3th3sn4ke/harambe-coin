@@ -1,14 +1,7 @@
 pragma solidity ^0.4.16;
 
-contract HarambeCoin {
-  uint public totalSupply;
-  function balanceOf(address who) public constant returns (uint);
-  function allowance(address owner, address spender) public constant returns (uint);
-  function transfer(address to, uint value) public returns (bool ok);
-  function transferFrom(address from, address to, uint value) public returns (bool ok);
-  function approve(address spender, uint value) public returns (bool ok);
-  function mintToken(address to, uint256 value) public returns (uint256);
-  function changeTransfer(bool allowed) public;
+interface HarambeCoin {
+    function mintToken(address to, uint256 value) public returns (uint256);
 }
 
 
@@ -21,11 +14,13 @@ contract ProjectHarambe {
 
     uint public totalMinted;
     uint public deadline;
+    uint public etherCost;
     uint public exchangeRate;
 
     HarambeCoin public harambeCoin;
     mapping(address => uint256) public balanceOf;
     bool public isFunding;
+    uint256 public decimals = 18;
 
     //event ReleaseTokens(address from, uint256 amount);
     event Contribution(address from, uint256 amount);
@@ -37,7 +32,7 @@ contract ProjectHarambe {
      * Setup the owner
      */
     function ProjectHarambe(
-        uint etherCostOfEachToken,
+        uint cost,
         address tokenAddress
     ) public {
         ETHWalletKy = 0x0;
@@ -53,9 +48,26 @@ contract ProjectHarambe {
         deadline = now + 744 * 60 minutes;
 
         /* Exchange rate */
-        exchangeRate = etherCostOfEachToken * 1 ether;
+        etherCost = cost * 1 ether;
+        exchangeRate = 1 / etherCost;
 
         harambeCoin = HarambeCoin(tokenAddress);
+    }
+
+    // default function
+    // converts ETH to TOKEN and holds new token to be sent
+    function () external payable {
+        require(msg.value > 0);
+        require(isFunding);
+
+        uint256 amount = msg.value * exchangeRate;
+
+        totalMinted += amount;
+
+        //ETHWalletHarambe.transfer(msg.value);
+        harambeCoin.mintToken(msg.sender, amount);
+        balanceOf[msg.sender] += amount;
+        Contribution(msg.sender, amount);
     }
 
     // CONTRIBUTE FUNCTION
@@ -63,14 +75,13 @@ contract ProjectHarambe {
     function contribute() external payable {
         require(msg.value > 0);
         require(isFunding);
-        //require(block.number <= endBlock);
+
         uint256 amount = msg.value * exchangeRate;
-        uint256 total = totalMinted + amount;
-        //require(total<=maxMintable);
-        totalMinted += total;
+
+        totalMinted += amount;
 
         //ETHWalletHarambe.transfer(msg.value);
-        //harambeCoin.mintToken(msg.sender, amount);
+        harambeCoin.mintToken(msg.sender, amount);
         balanceOf[msg.sender] += amount;
         Contribution(msg.sender, amount);
     }
