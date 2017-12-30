@@ -42,7 +42,7 @@ contract ProjectHarambe {
 
         /* Exchange rate */
         etherCost = cost * 1 ether;
-        etherCost = etherCost * (10 ** decimals);
+        etherCost = etherCost / (10 ** decimals);
         exchangeRate = 1 / etherCost;
 
         harambeCoin = HarambeCoin(tokenAddress);
