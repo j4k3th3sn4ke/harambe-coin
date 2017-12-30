@@ -26,7 +26,7 @@ contract HarambeCoin is owned{
     string public symbol;
     uint256 public decimals = 18;
     uint256 public totalSupply;
-    bool public is_tradable;
+    bool public isTradable;
 
     // This creates an array with all balances
     mapping (address => uint256) public balanceOf;
@@ -50,7 +50,7 @@ contract HarambeCoin is owned{
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
-        is_tradable = false;                                   //blocks trading functions until after the ICO
+        isTradable = false;                                   //blocks trading functions until after the ICO
         if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
 
     }
@@ -59,7 +59,7 @@ contract HarambeCoin is owned{
      * Modifier used to block the transfer of HarambeCoin until aftr the ICO ends.
      */
     modifier tradable() {
-        if (is_tradable) {
+        if (isTradable) {
             _;
         }
     }
@@ -69,8 +69,8 @@ contract HarambeCoin is owned{
      *
      * @param status the new bool value of tradable
      */
-    function transferOwnership(bool status) onlyOwner public {
-        is_tradable = status;
+    function updateTradable(bool status) onlyOwner public {
+        isTradable = status;
     }
 
     /**
