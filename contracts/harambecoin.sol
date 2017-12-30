@@ -26,6 +26,7 @@ contract HarambeCoin is owned{
     string public symbol;
     uint256 public decimals = 18;
     uint256 public totalSupply;
+    bool public tradable;
 
     // This creates an array with all balances
     mapping (address => uint256) public balanceOf;
@@ -49,7 +50,27 @@ contract HarambeCoin is owned{
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
+        tradable = false;                                   //blocks trading functions until after the ICO
         if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
+
+    }
+
+    /**
+     * Modifier used to block the transfer of HarambeCoin until aftr the ICO ends.
+     */
+    modifier tradable() {
+        if (tradable) {
+            _;
+        }
+    }
+
+    /**
+     * Updates tradable status, for use after the ICO ends
+     *
+     * @param status the new bool value of tradable
+     */
+    function transferOwnership(bool status) onlyOwner public {
+        tradable = status;
     }
 
     /**
@@ -97,7 +118,7 @@ contract HarambeCoin is owned{
      * @param _to The address of the recipient
      * @param _value the amount to send
      */
-    function transfer(address _to, uint256 _value) public returns (bool success) {
+    function transfer(address _to, uint256 _value) public tradable returns (bool success) {
         _transfer(msg.sender, _to, _value);
         return true;
     }
@@ -112,8 +133,7 @@ contract HarambeCoin is owned{
      * @param _value the amount to send
      */
     function transferFrom(address _from, address _to, uint _value)
-        public
-        returns (bool success)
+        public tradable returns (bool success)
     {
         uint allowance_amount = allowance[_from][msg.sender];
         require(balanceOf[_from] >= _value
@@ -134,7 +154,7 @@ contract HarambeCoin is owned{
      * @param _spender The address authorized to spend
      * @param _value the max amount they can spend
      */
-    function approve(address _spender, uint256 _value) public returns (bool success) {
+    function approve(address _spender, uint256 _value) public tradable returns (bool success) {
         allowance[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
