@@ -2,15 +2,12 @@ pragma solidity ^0.4.16;
 
 interface HarambeCoin {
     function mintToken(address to, uint256 value) public returns (uint256);
+    //function transferOwnership(bool status) onlyOwner public;
 }
 
 
 contract ProjectHarambe {
-    address private ETHWalletKy;
-    address private ETHWalletBr;
-    address private ETHWalletJa;
-    address private ETHWalletCh;
-    address private ETHWalletHarambe;
+    address private ETHWalletMultiSig;
 
     uint public totalMinted;
     uint public deadline;
@@ -35,11 +32,7 @@ contract ProjectHarambe {
         uint cost,
         address tokenAddress
     ) public {
-        ETHWalletKy = 0x0;
-        ETHWalletBr = 0x0;
-        ETHWalletJa = 0x0;
-        ETHWalletCh = 0x0;
-        ETHWalletHarambe = 0x0;
+        ETHWalletMultiSig = 0x0;
 
         isFunding = true;
         totalMinted = 0;
@@ -49,6 +42,7 @@ contract ProjectHarambe {
 
         /* Exchange rate */
         etherCost = cost * 1 ether;
+        etherCost = etherCost * (10 ** decimals);
         exchangeRate = 1 / etherCost;
 
         harambeCoin = HarambeCoin(tokenAddress);
