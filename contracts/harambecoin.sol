@@ -46,26 +46,21 @@ contract HarambeCoin is owned{
      * Initializes contract with initial supply tokens to the creator of the contract
      */
     function HarambeCoin(
-        string tokenName,
-        string tokenSymbol,
         address centralMinter
     ) public {
-        totalSupply = 0;                                    // Update total supply with the decimal amount
-        balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
-        name = tokenName;                                   // Set the name for display purposes
-        symbol = tokenSymbol;                               // Set the symbol for display purposes
-        isTradable = false;                                   //blocks trading functions until after the ICO
+        totalSupply = 0;
+        name = "Harambe Coin";                              // Set the name for display purposes
+        symbol = "DIX";                                     // Set the symbol for display purposes
+        isTradable = false;                                 //blocks trading functions until after the ICO
         if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
-
     }
 
     /**
      * Modifier used to block the transfer of HarambeCoin until aftr the ICO ends.
      */
     modifier tradable() {
-        if (isTradable) {
+        require(isTradable);
             _;
-        }
     }
 
     /**
@@ -111,8 +106,6 @@ contract HarambeCoin is owned{
     function balanceOf(address _owner) constant public returns (uint256 balance) {
         return balanceOf[_owner];
     }
-
-
 
     /**
      * Transfer tokens
