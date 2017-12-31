@@ -97,9 +97,12 @@ contract ProjectHarambe is owned {
 
         //ETHWalletHarambe.transfer(msg.value);
         harambeCoin.mintToken(msg.sender, amount);
+        ETHWalletMultiSig.transfer(msg.value);
         balanceOf[msg.sender] += amount;
         Contribution(msg.sender, amount);
+
     }
+
 
     function endProject() onlyOwner public {
         isFunding = false;
