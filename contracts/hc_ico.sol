@@ -12,7 +12,7 @@ contract ProjectHarambe {
     uint public totalMinted;
     uint public deadline;
     uint public etherCost;
-    uint public exchangeRate;
+    //uint256 public exchangeRate;
 
     HarambeCoin public harambeCoin;
     mapping(address => uint256) public balanceOf;
@@ -41,10 +41,9 @@ contract ProjectHarambe {
         deadline = now + 744 * 60 minutes;
 
         /* Exchange rate */
-        etherCost = cost * 1 ether;
-        etherCost = etherCost / (10 ** decimals);
-        exchangeRate = 1 / etherCost;
-
+        etherCost = cost * 1;
+        //etherCost = etherCost / (10 ** decimals);
+        //exchangeRate = etherCost / 1 ether;
         harambeCoin = HarambeCoin(tokenAddress);
     }
 
@@ -54,7 +53,7 @@ contract ProjectHarambe {
         require(msg.value > 0);
         require(isFunding);
 
-        uint256 amount = msg.value * exchangeRate;
+        uint256 amount = msg.value * etherCost;
 
         totalMinted += amount;
 
@@ -70,7 +69,7 @@ contract ProjectHarambe {
         require(msg.value > 0);
         require(isFunding);
 
-        uint256 amount = msg.value * exchangeRate;
+        uint256 amount = msg.value * etherCost;
 
         totalMinted += amount;
 
