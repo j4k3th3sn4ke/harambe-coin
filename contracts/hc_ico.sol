@@ -67,9 +67,10 @@ contract ProjectHarambe is owned {
 
     // default function
     // converts ETH to TOKEN and holds new token to be sent
-    function () external payable {
+    function () external payable projectActive {
         require(msg.value > 0);
         require(isFunding);
+        require(now <= deadline);
 
         uint256 amount = msg.value * etherCost;
 
@@ -86,6 +87,7 @@ contract ProjectHarambe is owned {
     function contribute() external payable {
         require(msg.value > 0);
         require(isFunding);
+        require(now <= deadline);
 
         uint256 amount = msg.value * etherCost;
 
@@ -97,13 +99,8 @@ contract ProjectHarambe is owned {
         Contribution(msg.sender, amount);
     }
 
-    modifier afterDeadline() {
-        if (now >= deadline) {
-            _;
-        }
-    }
-
     function endProject() onlyOwner public {
+        isFunding = false;
         harambeCoin.transferOwnership(ETHWalletMultiSig);
         harambeCoin.updateTradable(true);
     }
@@ -111,7 +108,7 @@ contract ProjectHarambe is owned {
     /**
      * Returns total supply of the contract
      */
-    function totalMinted() constant public returns (uint256 total){
+    function totalMinted() constant public returns (uint256 total) {
         return totalMinted;
     }
 
@@ -120,19 +117,6 @@ contract ProjectHarambe is owned {
      */
     function balanceOf() constant public returns (uint256 balance) {
         return balanceOf[msg.sender];
-    }
-
-    /**
-     * Check if goal was reached
-     *
-     * Checks if the goal or time limit has been reached and ends the campaign
-     */
-    function checkGoalReached() public afterDeadline {
-        //if (amountRaised >= fundingGoal){
-        //    fundingGoalReached = true;
-        //    GoalReached(beneficiary, amountRaised);
-        //}
-        isFunding = false;
     }
 
 }
