@@ -55,15 +55,13 @@ contract ProjectHarambe is owned {
 
         isFunding = true;
         totalMinted = 0;
-        //etherRaised = 0;
 
         /* The ICO will run for 31 days (the length of January) */
         deadline = now + 744 * 60 minutes;
 
         /* Exchange rate */
         etherCost = cost * 1;
-        //etherCost = etherCost / (10 ** decimals);
-        //exchangeRate = etherCost / 1 ether;
+
         harambeCoin = HarambeCoin(tokenAddress);
     }
 
@@ -78,7 +76,6 @@ contract ProjectHarambe is owned {
 
         totalMinted += amount;
 
-        
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
         balanceOf[msg.sender] += amount;
@@ -96,7 +93,6 @@ contract ProjectHarambe is owned {
 
         totalMinted += amount;
 
-        
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
         balanceOf[msg.sender] += amount;
@@ -104,11 +100,22 @@ contract ProjectHarambe is owned {
 
     }
 
-
-    function endProject() onlyOwner public {
-        isFunding = false;
-        harambeCoin.transferOwnership(ETHWalletMultiSig);
-        harambeCoin.updateTradable(true);
+    /**
+     * Updates tradable status, for use after the ICO ends
+     *
+     * @param status the new bool value of tradable
+     */
+    function updateIsFunding(bool status) onlyOwner public {
+        isFunding = status;
+    }
+    
+    /**
+     * Updates ether cost, for keeping price consistent
+     *
+     * @param uint cost 
+     */
+    function updateEtherCost(uint cost) onlyOwner public {
+        etherCost = cost;
     }
     
     /**
