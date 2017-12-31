@@ -27,6 +27,7 @@ contract ProjectHarambe is owned {
     address private ETHWalletMultiSig;
 
     uint public totalMinted;
+    //uint public etherRaised;
     uint public deadline;
     uint public etherCost;
     //uint256 public exchangeRate;
@@ -54,6 +55,7 @@ contract ProjectHarambe is owned {
 
         isFunding = true;
         totalMinted = 0;
+        //etherRaised = 0;
 
         /* The ICO will run for 31 days (the length of January) */
         deadline = now + 744 * 60 minutes;
