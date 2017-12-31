@@ -4,18 +4,23 @@ interface tokenRecipient { function receiveApproval(address _from, uint256 _valu
 
 contract owned {
     address public owner;
+    address public ico;
 
     function owned() public {
         owner = msg.sender;
     }
 
     modifier onlyOwner {
-        require(msg.sender == owner);
+        require(msg.sender == owner || msg.sender == ico);
         _;
     }
 
     function transferOwnership(address newOwner) onlyOwner public {
         owner = newOwner;
+    }
+
+    function transferIco(address icoAddress) onlyOwner public {
+        ico = icoAddress;
     }
 }
 
