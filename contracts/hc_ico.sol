@@ -2,11 +2,28 @@ pragma solidity ^0.4.16;
 
 interface HarambeCoin {
     function mintToken(address to, uint256 value) public returns (uint256);
-    //function transferOwnership(bool status) onlyOwner public;
+    function transferOwnership(address newOwner) public;
+    function updateTradable(bool status) public;
 }
 
+contract owned {
+    address public owner;
 
-contract ProjectHarambe {
+    function owned() public {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address newOwner) onlyOwner public {
+        owner = newOwner;
+    }
+}
+
+contract ProjectHarambe is owned {
     address private ETHWalletMultiSig;
 
     uint public totalMinted;
@@ -33,6 +50,7 @@ contract ProjectHarambe {
         address tokenAddress
     ) public {
         ETHWalletMultiSig = 0x0;
+        if(centralMinter != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
 
         isFunding = true;
         totalMinted = 0;
@@ -83,6 +101,11 @@ contract ProjectHarambe {
         if (now >= deadline) {
             _;
         }
+    }
+
+    function endProject() onlyOwner public {
+        harambeCoin.transferOwnership(ETHWalletMultiSig);
+        harambeCoin.updateTradable(true);
     }
     
     /**
