@@ -51,7 +51,7 @@ contract ProjectHarambe is owned {
         address tokenAddress
     ) public {
         ETHWalletMultiSig = 0x0;
-        if(centralMinter != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
+        if(ETHWalletMultiSig != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
 
         isFunding = true;
         totalMinted = 0;
@@ -69,7 +69,7 @@ contract ProjectHarambe is owned {
 
     // default function
     // converts ETH to TOKEN and holds new token to be sent
-    function () external payable projectActive {
+    function () external payable {
         require(msg.value > 0);
         require(isFunding);
         require(now <= deadline);
