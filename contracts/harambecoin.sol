@@ -19,7 +19,6 @@ contract owned {
     }
 }
 
-
 contract HarambeCoin is owned{
     // Public variables of the token
     string public name;
