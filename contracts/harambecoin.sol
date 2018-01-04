@@ -11,6 +11,7 @@ contract owned {
     }
 
     modifier onlyOwner {
+        // requires that the sender of the message must either be the coin owner or the ICO
         require(msg.sender == owner || msg.sender == ico);
         _;
     }
@@ -51,12 +52,12 @@ contract HarambeCoin is owned{
         totalSupply = 0;
         name = "Harambe Coin";                              // Set the name for display purposes
         symbol = "DIX";                                     // Set the symbol for display purposes
-        isTradable = false;                                 //blocks trading functions until after the ICO
+        isTradable = false;                                 // Blocks trading functions until after the ICO
         if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
     }
 
     /**
-     * Modifier used to block the transfer of HarambeCoin until aftr the ICO ends.
+     * Modifier used to block the transfer of HarambeCoin until after the ICO ends.
      */
     modifier tradable() {
         require(isTradable);
@@ -126,6 +127,7 @@ contract HarambeCoin is owned{
      *
      * Send `_value` tokens to `_to` from your account
      *
+     * @param _from The address of the sender
      * @param _to The address of the recipient
      * @param _value the amount to send
      */
@@ -190,7 +192,7 @@ contract HarambeCoin is owned{
      *
      * Allows the contract owner to mint `mintedAmount` tokens to an address
      *
-     * @param _to The address reciving the coins
+     * @param _to The address receiving the coins
      * @param mintedAmount The amount of coin being minted
      */
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
