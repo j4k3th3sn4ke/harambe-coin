@@ -1,4 +1,4 @@
-pragma solidity ^0.4.16;
+pragma solidity 0.4.18;
 
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
 
@@ -26,6 +26,10 @@ contract owned {
 }
 
 contract HarambeCoin is owned{
+
+    // Include SafeMath solidity library
+    using SafeMath for uint256;
+
     // Public variables of the token
     string public name;
     string public symbol;
@@ -82,16 +86,16 @@ contract HarambeCoin is owned{
         // Check if the sender has enough
         require(balanceOf[_from] >= _value);
         // Check for overflows
-        require(balanceOf[_to] + _value > balanceOf[_to]);
+        require(balanceOf[_to].add(_value) > balanceOf[_to]);
         // Save this for an assertion in the future
-        uint previousBalances = balanceOf[_from] + balanceOf[_to];
+        uint previousBalances = balanceOf[_from].add(balanceOf[_to]);
         // Subtract from the sender
-        balanceOf[_from] -= _value;
+        balanceOf[_from] = balanceOf[_from].sub(_value);
         // Add the same to the recipient
-        balanceOf[_to] += _value;
+        balanceOf[_to] = balanceOf[_to].add(_value);
         Transfer(_from, _to, _value);
         // Asserts are used to use static analysis to find bugs in your code. They should never fail
-        assert(balanceOf[_from] + balanceOf[_to] == previousBalances);
+        assert(balanceOf[_from].add(balanceOf[_to]) == previousBalances);
     }
 
     /**
@@ -137,10 +141,10 @@ contract HarambeCoin is owned{
         uint allowance_amount = allowance[_from][msg.sender];
         require(balanceOf[_from] >= _value
                 && allowance_amount >= _value
-                && balanceOf[_to] + _value >= balanceOf[_to]);
-        balanceOf[_to] += _value;
-        balanceOf[_from] -= _value;
-        allowance[_from][msg.sender] -= _value;
+                && balanceOf[_to].add(_value) >= balanceOf[_to]);
+        balanceOf[_to] = balanceOf[_to].add(_value);
+        balanceOf[_from] = balanceOf[_from].sub(_value);
+        allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         Transfer(_from, _to, _value);
         return true;
     }
@@ -195,10 +199,10 @@ contract HarambeCoin is owned{
      * @param _to The address receiving the coins
      * @param mintedAmount The amount of coin being minted
      */
-    function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
+    function mintToken(address _to, uint256 mintedAmount) onlyOwner private {
         uint256 total = mintedAmount;
-        balanceOf[_to] += total;
-        totalSupply += mintedAmount;
+        balanceOf[_to] = balanceOf[_to].add(total);
+        totalSupply = totalSupply.add(mintedAmount);
         Transfer(0, owner, total);
         Transfer(owner, _to, total);
     }
