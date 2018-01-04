@@ -24,13 +24,13 @@ contract owned {
 }
 
 contract ProjectHarambe is owned {
+    using SafeMath for uint256;
+
     address private ETHWalletMultiSig;
 
-    uint public totalMinted;
-    //uint public etherRaised;
-    uint public deadline;
-    uint public etherCost;
-    //uint256 public exchangeRate;
+    uint256 public totalMinted;
+    uint256 public deadline;
+    uint256 public etherCost;
 
     HarambeCoin public harambeCoin;
     mapping(address => uint256) public balanceOf;
@@ -47,18 +47,18 @@ contract ProjectHarambe is owned {
      * Setup the owner
      */
     function ProjectHarambe(
-        uint cost,
+        uint256 cost,
         address tokenAddress
     ) public {
         ETHWalletMultiSig = 0x0;
         if(ETHWalletMultiSig != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
-
+        
         isFunding = true;
         totalMinted = 0;
-
+        
         /* The ICO will run for 31 days (the length of January) */
         deadline = now + 744 * 60 minutes;
-
+        
         /* Exchange rate */
         etherCost = cost * 1;
 
@@ -72,13 +72,14 @@ contract ProjectHarambe is owned {
         require(isFunding);
         require(now <= deadline);
 
-        uint256 amount = msg.value * etherCost;
+        uint256 amount = msg.value.mult(etherCost);
 
-        totalMinted += amount;
+        totalMinted =totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
-        balanceOf[msg.sender] += amount;
+
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
         Contribution(msg.sender, amount);
     }
 
@@ -89,15 +90,14 @@ contract ProjectHarambe is owned {
         require(isFunding);
         require(now <= deadline);
 
-        uint256 amount = msg.value * etherCost;
+        uint256 amount = msg.value.mult(etherCost);
 
-        totalMinted += amount;
+        totalMinted = totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
-        balanceOf[msg.sender] += amount;
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
         Contribution(msg.sender, amount);
-
     }
 
     /**
@@ -112,9 +112,9 @@ contract ProjectHarambe is owned {
     /**
      * Updates ether cost, for keeping price consistent
      *
-     * @param uint cost 
+     * @param uint256 cost 
      */
-    function updateEtherCost(uint cost) onlyOwner public {
+    function updateEtherCost(uint256 cost) onlyOwner public {
         etherCost = cost;
     }
     
@@ -132,4 +132,37 @@ contract ProjectHarambe is owned {
         return balanceOf[msg.sender];
     }
 
+}
+
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+      return 0;
+    }
+    uint256 c = a * b;
+    assert(c / a == b);
+    return c;
+  }
+
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
+    uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+    return c;
+  }
+
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    assert(b <= a);
+    return a - b;
+  }
+
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
+    uint256 c = a + b;
+    assert(c >= a);
+    return c;
+  }
 }
