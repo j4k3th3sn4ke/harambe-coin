@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 interface HarambeCoin {
-    function mintToken(address to, uint256 value) private returns (uint256);
+    function mintToken(address to, uint256 value) public returns (uint256);
     function transferOwnership(address newOwner) public;
     function updateTradable(bool status) public;
 }
