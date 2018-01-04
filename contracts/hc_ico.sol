@@ -37,7 +37,6 @@ contract ProjectHarambe is owned {
     bool public isFunding;
     uint256 public decimals = 18;
 
-    //event ReleaseTokens(address from, uint256 amount);
     event Contribution(address from, uint256 amount);
 
 
@@ -52,13 +51,13 @@ contract ProjectHarambe is owned {
     ) public {
         ETHWalletMultiSig = 0x0;
         if(ETHWalletMultiSig != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
-        
+
         isFunding = true;
         totalMinted = 0;
-        
-        /* The ICO will run for 31 days (the length of January) */
-        deadline = now + 744 * 60 minutes;
-        
+
+        /* The ICO will run for 30 days */
+        deadline = now + 720 * 60 minutes;
+
         /* Exchange rate */
         etherCost = cost * 1;
 
@@ -66,15 +65,15 @@ contract ProjectHarambe is owned {
     }
 
     // default function
-    // converts ETH to TOKEN and holds new token to be sent
+    // accepts ETH and mints HarambeCoin to the buyer
     function () external payable {
         require(msg.value > 0);
         require(isFunding);
         require(now <= deadline);
 
-        uint256 amount = msg.value.mult(etherCost);
+        uint256 amount = msg.value * etherCost;
 
-        totalMinted =totalMinted.add(amount);
+        totalMinted = totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
@@ -84,13 +83,13 @@ contract ProjectHarambe is owned {
     }
 
     // CONTRIBUTE FUNCTION
-    // converts ETH to TOKEN and holds new token to be sent
+    // accepts ETH and mints HarambeCoin to the buyer
     function contribute() external payable {
         require(msg.value > 0);
         require(isFunding);
         require(now <= deadline);
 
-        uint256 amount = msg.value.mult(etherCost);
+        uint256 amount = msg.value * etherCost;
 
         totalMinted = totalMinted.add(amount);
 
@@ -112,7 +111,7 @@ contract ProjectHarambe is owned {
     /**
      * Updates ether cost, for keeping price consistent
      *
-     * @param uint256 cost 
+     * @param uint256 cost
      */
     function updateEtherCost(uint256 cost) onlyOwner public {
         etherCost = cost;
@@ -120,6 +119,8 @@ contract ProjectHarambe is owned {
     
     /**
      * Returns total supply of the contract
+     *
+     * @param uint256 total
      */
     function totalMinted() constant public returns (uint256 total) {
         return totalMinted;
@@ -127,6 +128,8 @@ contract ProjectHarambe is owned {
 
     /**
      * Returns balance of particular address of account
+     *
+     * @param uint256 balance
      */
     function balanceOf() constant public returns (uint256 balance) {
         return balanceOf[msg.sender];
