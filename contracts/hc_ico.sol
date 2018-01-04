@@ -1,7 +1,7 @@
-pragma solidity ^0.4.16;
+pragma solidity ^0.4.18;
 
 interface HarambeCoin {
-    function mintToken(address to, uint256 value) public returns (uint256);
+    function mintToken(address to, uint256 value) private returns (uint256);
     function transferOwnership(address newOwner) public;
     function updateTradable(bool status) public;
 }
@@ -111,7 +111,7 @@ contract ProjectHarambe is owned {
     /**
      * Updates ether cost, for keeping price consistent
      *
-     * @param uint256 cost
+     * @param cost the cost of the coin
      */
     function updateEtherCost(uint256 cost) onlyOwner public {
         etherCost = cost;
@@ -120,7 +120,7 @@ contract ProjectHarambe is owned {
     /**
      * Returns total supply of the contract
      *
-     * @param uint256 total
+     * @param total the total supply already minted
      */
     function totalMinted() constant public returns (uint256 total) {
         return totalMinted;
@@ -129,7 +129,7 @@ contract ProjectHarambe is owned {
     /**
      * Returns balance of particular address of account
      *
-     * @param uint256 balance
+     * @param balance the balance of sender
      */
     function balanceOf() constant public returns (uint256 balance) {
         return balanceOf[msg.sender];
