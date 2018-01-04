@@ -37,7 +37,6 @@ contract ProjectHarambe is owned {
     bool public isFunding;
     uint256 public decimals = 18;
 
-    //event ReleaseTokens(address from, uint256 amount);
     event Contribution(address from, uint256 amount);
 
 
@@ -74,7 +73,7 @@ contract ProjectHarambe is owned {
 
         uint256 amount = msg.value.mult(etherCost);
 
-        totalMinted =totalMinted.add(amount);
+        totalMinted = totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
         ETHWalletMultiSig.transfer(msg.value);
