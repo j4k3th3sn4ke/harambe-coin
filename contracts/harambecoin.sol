@@ -38,6 +38,7 @@ contract HarambeCoin is owned{
     string public symbol;
     uint256 public decimals = 18;
     uint256 public totalSupply;
+    uint256 public totalMinted;
     bool public isTradable;
 
     // This creates an array with all balances
@@ -56,9 +57,10 @@ contract HarambeCoin is owned{
     function HarambeCoin(
         address centralMinter
     ) public {
-        totalSupply = 0;
+        totalSupply = 100000000;                            // Set the total supply of coins to 
+        totalMinted = 0;                                    // Initiallizes number of minted coins to 0 
         name = "Harambe Coin";                              // Set the name for display purposes
-        symbol = "DIX";                                     // Set the symbol for display purposes
+        symbol = "HRMB";                                    // Set the symbol for display purposes
         isTradable = false;                                 // Blocks trading functions until after the ICO
         if(centralMinter != 0 ) owner = centralMinter;      // Set the owner of the contract
     }
@@ -106,6 +108,13 @@ contract HarambeCoin is owned{
      */
     function totalSupply() constant public returns (uint256 total){
         return totalSupply;
+    }
+
+    /**
+     * Returns total supply of the contract
+     */
+    function totalMinted() constant public returns (uint256 total){
+        return totalMinted;
     }
 
     /**
@@ -203,9 +212,10 @@ contract HarambeCoin is owned{
      * @param mintedAmount The amount of coin being minted
      */
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
-        uint256 total = mintedAmount;
-        balanceOf[_to] = balanceOf[_to].add(total);
-        totalSupply = totalSupply.add(mintedAmount);
+        //ensures totalSupply is not gone over
+        require(totalSupply >= totalMinted.add(mintedAmount));
+        balanceOf[_to] = balanceOf[_to].add(mintedAmount);
+        totalMinted = totalMinted.add(mintedAmount);
         Transfer(0, owner, total);
         Transfer(owner, _to, total);
     }
