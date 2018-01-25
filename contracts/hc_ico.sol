@@ -26,11 +26,13 @@ contract owned {
 contract ProjectHarambe is owned {
     using SafeMath for uint256;
 
-    address private ETHWalletMultiSig;
+    address private ETHWallet;
 
+    uint256 public totalSupply;
     uint256 public totalMinted;
     uint256 public deadline;
     uint256 public etherCost;
+    uint256 public minBuyAmount;
 
     HarambeCoin public harambeCoin;
     mapping(address => uint256) public balanceOf;
@@ -49,17 +51,19 @@ contract ProjectHarambe is owned {
         uint256 cost,
         address tokenAddress
     ) public {
-        ETHWalletMultiSig = 0x0;
-        if(ETHWalletMultiSig != 0 ) owner = ETHWalletMultiSig;      // Set the owner of the contract
+        ETHWallet = 0x0;
+        if(ETHWallet != 0 ) owner = ETHWallet;      // Set the owner of the contract
 
         isFunding = true;
-        totalMinted = 0;
+        totalSupply = 100000000;                    // Set the total supply of coins to 100,000,000
+        totalMinted = 0;                            // Initiallizes number of minted coins to 0 
 
         /* The ICO will run for 30 days */
         deadline = now + 720 * 60 minutes;
 
         /* Exchange rate */
         etherCost = cost * 1;
+        minBuyAmount = 10000000000000000;           // .01 ETH
 
         harambeCoin = HarambeCoin(tokenAddress);
     }
@@ -67,16 +71,17 @@ contract ProjectHarambe is owned {
     // default function
     // accepts ETH and mints HarambeCoin to the buyer
     function () external payable {
-        require(msg.value > 0);
+        require(msg.value > minBuyAmount);
         require(isFunding);
         require(now <= deadline);
-
+        
         uint256 amount = msg.value * etherCost;
+        require(totalSupply >= totalMinted.add(amount));
 
         totalMinted = totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
-        ETHWalletMultiSig.transfer(msg.value);
+        ETHWallet.transfer(msg.value);
 
         balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
         Contribution(msg.sender, amount);
@@ -85,16 +90,17 @@ contract ProjectHarambe is owned {
     // CONTRIBUTE FUNCTION
     // accepts ETH and mints HarambeCoin to the buyer
     function contribute() external payable {
-        require(msg.value > 0);
+        require(msg.value > minBuyAmount);
         require(isFunding);
         require(now <= deadline);
-
+        
         uint256 amount = msg.value * etherCost;
+        require(totalSupply >= totalMinted.add(amount));
 
         totalMinted = totalMinted.add(amount);
 
         harambeCoin.mintToken(msg.sender, amount);
-        ETHWalletMultiSig.transfer(msg.value);
+        ETHWallet.transfer(msg.value);
         balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
         Contribution(msg.sender, amount);
     }
