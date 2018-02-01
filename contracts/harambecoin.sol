@@ -36,8 +36,8 @@ contract HarambeCoin is owned{
     string public name;
     string public symbol;
     uint256 public decimals = 18;
+    uint256 public maxSupply;
     uint256 public totalSupply;
-    uint256 public totalMinted;
     bool public isTradable;
 
     // This creates an array with all balances
@@ -56,8 +56,8 @@ contract HarambeCoin is owned{
     function HarambeCoin(
         address centralMinter
     ) public {
-        totalSupply = 100000000;                            // Set the total supply of coins to 100,000,000
-        totalMinted = 0;                                    // Initiallizes number of minted coins to 0 
+        maxSupply = 100000000 ether;                      // Set the total supply of coins to 100,000,000
+        totalSupply = 0;                                    // Initiallizes number of minted coins to 0 
         name = "Harambe Coin";                              // Set the name for display purposes
         symbol = "HRMB";                                    // Set the symbol for display purposes
         isTradable = false;                                 // Blocks trading functions until after the ICO
@@ -105,15 +105,15 @@ contract HarambeCoin is owned{
     /**
      * Returns total supply of the contract
      */
-    function totalSupply() constant public returns (uint256 total){
-        return totalSupply;
+    function maxSuply() constant public returns (uint256 total){
+        return maxSuply;
     }
 
     /**
      * Returns total supply of the contract
      */
-    function totalMinted() constant public returns (uint256 total){
-        return totalMinted;
+    function totalSupply() constant public returns (uint256 total){
+        return totalSupply;
     }
 
     /**
@@ -209,12 +209,12 @@ contract HarambeCoin is owned{
      * @param mintedAmount The amount of coin being minted
      */
     function mintToken(address _to, uint256 mintedAmount) onlyOwner public {
-        //ensures totalSupply is not gone over
-        require(totalSupply >= totalMinted.add(mintedAmount));
+        //ensures maxSupply is not gone over
+        require(maxSupply >= totalSupply.add(mintedAmount));
         balanceOf[_to] = balanceOf[_to].add(mintedAmount);
-        totalMinted = totalMinted.add(mintedAmount);
-        Transfer(0, owner, totalMinted);
-        Transfer(owner, _to, totalMinted);
+        totalSupply = totalSupply.add(mintedAmount);
+        Transfer(0, owner, mintedAmount);
+        Transfer(owner, _to, mintedAmount);
     }
 
 }
