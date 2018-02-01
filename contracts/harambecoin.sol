@@ -1,7 +1,6 @@
 pragma solidity 0.4.18;
 
-// imports the SafeMath.sol file
-//import './SafeMath.sol';
+//import "github.com/j4k3th3sn4ke/harambe-coin/blob/master/contracts/SafeMath.sol";
 
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
 
@@ -57,7 +56,7 @@ contract HarambeCoin is owned{
     function HarambeCoin(
         address centralMinter
     ) public {
-        totalSupply = 100000000;                            // Set the total supply of coins to 
+        totalSupply = 100000000;                            // Set the total supply of coins to 100,000,000
         totalMinted = 0;                                    // Initiallizes number of minted coins to 0 
         name = "Harambe Coin";                              // Set the name for display purposes
         symbol = "HRMB";                                    // Set the symbol for display purposes
@@ -175,14 +174,12 @@ contract HarambeCoin is owned{
         return true;
     }
 
-
     /**
      * Returns allowance of the owner to the pro
      */
     function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
         return allowance[_owner][_spender];
     }
-
 
     /**
      * Set allowance for other address and notify
@@ -216,8 +213,8 @@ contract HarambeCoin is owned{
         require(totalSupply >= totalMinted.add(mintedAmount));
         balanceOf[_to] = balanceOf[_to].add(mintedAmount);
         totalMinted = totalMinted.add(mintedAmount);
-        Transfer(0, owner, total);
-        Transfer(owner, _to, total);
+        Transfer(0, owner, totalMinted);
+        Transfer(owner, _to, totalMinted);
     }
 
 }
